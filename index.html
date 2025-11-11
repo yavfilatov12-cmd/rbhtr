@@ -1,0 +1,170 @@
+<!-- 
+  Проект: Мобильная игра "Сапёр" 
+  Школа: 1430, Москва
+  Инженерный класс
+  2025
+-->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сапёр для двух игроков | Школа 1430</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Основной контейнер приложения -->
+    <div class="app-container">
+        <!-- Шапка приложения -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="header-title">Сапёр</h1>
+                <div class="school-badge">Проект Школы 1430</div>
+            </div>
+            <div class="player-indicator" id="playerIndicator">
+                <span class="player-label">Игрок:</span>
+                <span class="player-number" id="playerNumber">1</span>
+            </div>
+        </header>
+
+        <!-- Экран выбора режима игры -->
+        <div class="screen" id="modeScreen">
+            <div class="screen-content">
+                <h2 class="screen-title">Выберите режим игры</h2>
+                <p class="school-project-label">Школьный проект 1430</p>
+                <div class="mode-buttons">
+                    <button class="btn btn-primary" id="classicModeBtn">
+                        <span class="btn-icon">🎮</span>
+                        <div class="btn-content">
+                            <span class="btn-title">Классический</span>
+                            <span class="btn-description">Один раунд, быстрая игра</span>
+                        </div>
+                    </button>
+                    <button class="btn btn-primary" id="tournamentModeBtn">
+                        <span class="btn-icon">🏆</span>
+                        <div class="btn-content">
+                            <span class="btn-title">Турнирный</span>
+                            <span class="btn-description">Два раунда, смена ролей</span>
+                        </div>
+                    </button>
+                </div>
+                <div class="settings">
+                    <label class="theme-toggle">
+                        <input type="checkbox" id="themeToggle">
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-label">Тёмная тема</span>
+                    </label>
+                    <label class="sound-toggle">
+                        <input type="checkbox" id="soundToggle" checked>
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-label">Звук</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран расстановки мин -->
+        <div class="screen hidden" id="setupScreen">
+            <div class="screen-content">
+                <h2 class="screen-title">Расставьте мины</h2>
+                <div class="setup-info">
+                    <div class="info-item">
+                        <span class="info-label">Осталось мин:</span>
+                        <span class="info-value" id="minesLeft">8</span>
+                    </div>
+                </div>
+                <div class="game-field" id="setupField"></div>
+                <button class="btn btn-success" id="startGameBtn" disabled>
+                    <span>Начать игру</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Экран разминирования -->
+        <div class="screen hidden" id="gameScreen">
+            <div class="screen-content">
+                <h2 class="screen-title">Разминируйте поле</h2>
+                <div class="game-info">
+                    <div class="info-item">
+                        <span class="info-label">⏱️ Время:</span>
+                        <span class="info-value" id="timer">0:00</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">📊 Открыто:</span>
+                        <span class="info-value" id="openedCells">0</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">💣 Мины:</span>
+                        <span class="info-value" id="minesCount">8</span>
+                    </div>
+                </div>
+                <div class="game-field" id="gameField"></div>
+            </div>
+        </div>
+
+        <!-- Экран результатов -->
+        <div class="screen hidden" id="resultsScreen">
+            <div class="screen-content">
+                <h2 class="screen-title" id="resultTitle">Результаты</h2>
+                <div class="result-message" id="resultMessage"></div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Время</div>
+                            <div class="stat-value" id="finalTime">0:00</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Открыто ячеек</div>
+                            <div class="stat-value" id="finalOpened">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Точность</div>
+                            <div class="stat-value" id="finalAccuracy">0%</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Очки</div>
+                            <div class="stat-value" id="finalScore">0</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tournamentInfo" class="tournament-info hidden">
+                    <div class="tournament-status">
+                        <p>Раунд <span id="currentRound">1</span> из 2</p>
+                    </div>
+                    <div class="scores">
+                        <div class="score-item">
+                            <span class="score-label">Игрок 1:</span>
+                            <span class="score-value" id="player1Score">0</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="score-label">Игрок 2:</span>
+                            <span class="score-value" id="player2Score">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="result-buttons">
+                    <button class="btn btn-primary" id="nextRoundBtn">Следующий раунд</button>
+                    <button class="btn btn-secondary" id="newGameBtn">Новая игра</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Подвал приложения -->
+    <footer class="footer">
+        <p>&copy; 2025 Школа 1430 | Инженерный класс</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
